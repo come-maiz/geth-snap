@@ -5,6 +5,7 @@ language: go
 addons:
   apt:
     packages:
+    - gcc-multilib
     - jq
   snaps:
   - name: snapcraft
