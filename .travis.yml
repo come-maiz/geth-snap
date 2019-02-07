@@ -1,0 +1,38 @@
+dist: xenial
+
+language: go
+
+addons:
+  apt:
+    packages:
+    - jq
+  snaps:
+  - name: snapcraft
+    classic: true
+
+env:
+  - ARCHITECTURE=amd64 CHANNEL=edge
+  - ARCHITECTURE=amd64 CHANNEL=candidate
+  - ARCHITECTURE=i386 CHANNEL=edge
+  - ARCHITECTURE=i386 CHANNEL=candidate
+  - ARCHITECTURE=armhf CHANNEL=edge
+  - ARCHITECTURE=armhf CHANNEL=candidate
+  - ARCHITECTURE=arm64 CHANNEL=edge
+  - ARCHITECTURE=arm64 CHANNEL=candidate
+
+script:
+  # Decrypt the login credentials.
+  - openssl aes-256-cbc -K $encrypted_74010c3d9f56_key -iv $encrypted_74010c3d9f56_iv
+    -in snapcraft-login.enc -out snapcraft-login -d
+  - snapcraft login --with snapcraft-login
+  - /snap/bin/snapcraft clean
+  - ./scripts/snap $ARCHITECTURE $CHANNEL
+  - |
+    if [ "$ARCHITECTURE" = "amd64" ]; then
+      sudo snap install *.snap --dangerous
+    fi
+  # Publish to the snap store channel.
+  - |
+    if [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_EVENT_TYPE" != "pull_request" ]; then
+      snapcraft push *.snap --release $CHANNEL
+    fi

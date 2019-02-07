@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# Build a snap if it has been not released to the snap store.
+# Arguments:
+#   architecture: the architecture of the snap to check.
+#   channel: the snap store channel to check.
+
+set -ev
+
+if [ "$#" -lt 3 ]; then
+    echo "Usage: $0 <architecture> <channel>"
+    exit 1
+fi
+
+readonly ARCHITECTURE="$1"
+readonly CHANNEL="$2"
+
+last_released_version="$(snapcraft status geth | grep "$ARCHITECTURE" -C 3 | grep "$CHANNEL" | awk '{print $2}')"
+echo "Last released version: $last_released_version"
+if [ "$CHANNEL}" = "candidate" ]; then
+  wget https://api.github.com/repos/ethereum/go-ethereum/releases
+  $BRANCH="$(jq --raw-output .[0].tag_name releases)"
+else
+  $BRANCH=master
+fi
+rm -rf /tmp/go-ethereum
+git clone https://github.com/ethereum/go-ethereum --branch "$BRANCH" --depth 1 /tmp/go-ethereum
+last_committed_version="$(git -C /tmp/geth-ethereum/ describe --dirty --always --tags)"
+echo "Last committed version: $last_committed_version"
+
+if [ "${last_committed_version}" != "${last_released_version}" ]; then
+  sed -i "0,/source-tag/s/source-tag:.*$/source-tag: '"$last_comitted_version"'/g" snapcraft.yaml
+  sed -i "s/version:.*$/version: '"$last_commited_version"'/g" snapcraft.yaml
+  /snap/bin/snapcraft --target-arch $ARCHITECTURE
+else
+  travis_terminate 0
+fi

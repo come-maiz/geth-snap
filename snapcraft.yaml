@@ -1,0 +1,45 @@
+name: geth
+version: master
+summary: Official Go implementation of the Ethereum protocol
+description: |
+  Go Ethereum is one of the three original implementations
+  (along with C++ and Python) of the Ethereum protocol. It
+  is written in Go, fully open source and licensed under
+  the GNU LGPL v3.
+
+grade: stable
+confinement: strict
+
+apps:
+  abigen:
+    command: bin/abigen
+  bootnode:
+    command: bin/bootnode
+  evm:
+    command: bin/evm
+  faucet:
+    command: bin/faucet
+  geth:
+    command: bin/geth
+    plugs:
+      - network
+      - network-bind
+      - removable-media
+  puppeth:
+    command: bin/puppeth
+  rlpdump:
+    command: bin/rlpdump
+  swarm:
+    command: bin/swarm
+  wnode:
+    command: bin/wnode
+
+parts:
+  geth:
+    after: [go]
+    source: https://github.com/ethereum/go-ethereum.git
+    source-tag: master
+    plugin: go
+    go-importpath: github.com/ethereum/go-ethereum
+  go:
+    source-tag: go1.11.5
