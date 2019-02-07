@@ -19,9 +19,9 @@ last_released_version="$(snapcraft status geth | grep "$ARCHITECTURE" -C 3 | gre
 echo "Last released version: $last_released_version"
 if [ "$CHANNEL}" = "candidate" ]; then
   wget https://api.github.com/repos/ethereum/go-ethereum/releases
-  $BRANCH="$(jq --raw-output .[0].tag_name releases)"
+  BRANCH="$(jq --raw-output .[0].tag_name releases)"
 else
-  $BRANCH=master
+  BRANCH=master
 fi
 rm -rf /tmp/go-ethereum
 git clone https://github.com/ethereum/go-ethereum --branch "$BRANCH" --depth 1 /tmp/go-ethereum
