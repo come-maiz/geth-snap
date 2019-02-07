@@ -25,7 +25,7 @@ else
 fi
 rm -rf /tmp/go-ethereum
 git clone https://github.com/ethereum/go-ethereum --branch "$BRANCH" --depth 1 /tmp/go-ethereum
-last_committed_version="$(git -C /tmp/geth-ethereum/ describe --dirty --always --tags)"
+last_committed_version="$(git -C /tmp/go-ethereum/ describe --dirty --always --tags)"
 echo "Last committed version: $last_committed_version"
 
 if [ "${last_committed_version}" != "${last_released_version}" ]; then
