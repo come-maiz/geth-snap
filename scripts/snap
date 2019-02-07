@@ -30,7 +30,7 @@ echo "Last committed version: $last_committed_version"
 
 if [ "${last_committed_version}" != "${last_released_version}" ]; then
   sed -i "0,/source-tag/s/source-tag:.*$/source-tag: '"$last_comitted_version"'/g" snapcraft.yaml
-  sed -i "s/version:.*$/version: '"$last_commited_version"'/g" snapcraft.yaml
+  sed -i "s/version:.*$/version: '"$last_committed_version"'/g" snapcraft.yaml
   /snap/bin/snapcraft --target-arch $ARCHITECTURE
 else
   travis_terminate 0
