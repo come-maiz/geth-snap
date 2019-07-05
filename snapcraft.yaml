@@ -29,8 +29,6 @@ apps:
     command: bin/puppeth
   rlpdump:
     command: bin/rlpdump
-  swarm:
-    command: bin/swarm
   wnode:
     command: bin/wnode
 
