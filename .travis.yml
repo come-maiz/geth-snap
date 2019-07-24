@@ -27,6 +27,11 @@ script:
   - snapcraft login --with snapcraft-login
   - /snap/bin/snapcraft clean
   - ./scripts/snap $ARCHITECTURE $CHANNEL
+  # XXX Flacky, two .snap files will make this go crazy.
+  - |
+    if [ ! -f *".snap" ]; then
+      exit 0
+    fi
   - |
     if [ "$ARCHITECTURE" = "amd64" ]; then
       sudo snap install *.snap --dangerous
