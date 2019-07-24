@@ -33,5 +33,5 @@ if [ "${last_committed_version}" != "${last_released_version}" ]; then
   sed -i "s/version:.*$/version: '"$last_committed_version"'/g" snapcraft.yaml
   /snap/bin/snapcraft --target-arch $ARCHITECTURE
 else
-  travis_terminate 0
+  exit 0
 fi
