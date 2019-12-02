@@ -1,6 +1,6 @@
 dist: xenial
 
-language: go
+language: minimal
 
 addons:
   apt:
@@ -10,15 +10,13 @@ addons:
   - name: snapcraft
     classic: true
 
+arch:
+  - amd64
+  - arm64
+
 env:
-  - ARCHITECTURE=amd64 CHANNEL=edge
-  - ARCHITECTURE=amd64 CHANNEL=candidate
-  - ARCHITECTURE=i386 CHANNEL=edge
-  - ARCHITECTURE=i386 CHANNEL=candidate
-  - ARCHITECTURE=armhf CHANNEL=edge
-  - ARCHITECTURE=armhf CHANNEL=candidate
-  - ARCHITECTURE=arm64 CHANNEL=edge
-  - ARCHITECTURE=arm64 CHANNEL=candidate
+  - CHANNEL=edge
+  - CHANNEL=candidate
 
 script:
   - set -e
@@ -27,15 +25,11 @@ script:
     -in snapcraft-login.enc -out snapcraft-login -d
   - snapcraft login --with snapcraft-login
   - /snap/bin/snapcraft clean
-  - ./scripts/snap $ARCHITECTURE $CHANNEL
+  - ./scripts/snap $CHANNEL
   # XXX Flacky, two .snap files will make this go crazy.
   - |
     if [ ! -f *".snap" ]; then
       exit 0
-    fi
-  - |
-    if [ "$ARCHITECTURE" = "amd64" ]; then
-      sudo snap install *.snap --dangerous
     fi
   # Publish to the snap store channel.
   - |

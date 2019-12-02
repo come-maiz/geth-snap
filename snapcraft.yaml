@@ -12,32 +12,32 @@ confinement: strict
 
 apps:
   abigen:
-    command: bin/abigen
+    command: abigen
   bootnode:
-    command: bin/bootnode
+    command: bootnode
   evm:
-    command: bin/evm
+    command: evm
   faucet:
-    command: bin/faucet
+    command: faucet
   geth:
-    command: bin/geth
+    command: geth
     plugs:
       - network
       - network-bind
       - removable-media
   puppeth:
-    command: bin/puppeth
+    command: puppeth
   rlpdump:
-    command: bin/rlpdump
+    command: rlpdump
   wnode:
-    command: bin/wnode
+    command: wnode
 
 parts:
   geth:
-    after: [go]
+    build-snaps: [go]
     source: https://github.com/ethereum/go-ethereum.git
     source-tag: master
-    plugin: go
-    go-importpath: github.com/ethereum/go-ethereum
-  go:
-    source-tag: go1.11.13
+    plugin: make
+    override-build: |
+      make all
+      cp $SNAPCRAFT_PART_BUILD/build/bin/* $SNAPCRAFT_PART_INSTALL
