@@ -1,14 +1,15 @@
 dist: xenial
+sudo: required
 
 language: minimal
+
+cache:
+  directories: [$HOME/.cache/snapcraft/]
 
 addons:
   apt:
     packages:
     - jq
-  snaps:
-  - name: snapcraft
-    classic: true
 
 arch:
   - amd64
@@ -20,12 +21,17 @@ env:
 
 script:
   - set -e
+  - until sudo snap install snapcraft --classic; do echo "Retrying"; done
+  - sudo apt remove --purge --assume-yes lxd lxd-client
+  - sudo snap install lxd
+  - sudo /snap/bin/lxd waitready
+  - sudo /snap/bin/lxd init --auto
+  - sudo adduser $USER lxd
   # Decrypt the login credentials.
   - openssl aes-256-cbc -K $encrypted_74010c3d9f56_key -iv $encrypted_74010c3d9f56_iv
     -in snapcraft-login.enc -out snapcraft-login -d
   - snapcraft login --with snapcraft-login
-  - /snap/bin/snapcraft clean
-  - ./scripts/snap $CHANNEL
+  - sudo ./scripts/snap $CHANNEL
   # XXX Flacky, two .snap files will make this go crazy.
   - |
     if [ ! -f *".snap" ]; then
